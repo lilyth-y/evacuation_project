@@ -27,7 +27,7 @@ class VisualizationManager {
         // 기존 경로 제거
         this.clearPaths();
         
-        const positions = path.map(node => VisualizationManager.localToCart(node.x, node.z, 0));
+        const positions = path.map(node => VisualizationManager.localToCart(node.x, node.z, 1.5));
         
         const pathEntity = this.viewer.entities.add({
             polyline: {
@@ -69,7 +69,7 @@ class VisualizationManager {
         this.clearDangerZones();
         
         const dangerEntity = this.viewer.entities.add({
-            position: VisualizationManager.localToCart(center.x, center.z, 0),
+            position: VisualizationManager.localToCart(center.x, center.z, 1.0),
             ellipsoid: {
                 radii: new Cesium.Cartesian3(radius, radius, 2),
                 material: Cesium.Color.RED.withAlpha(intensity),
@@ -124,6 +124,9 @@ class VisualizationManager {
                     });
                     
                     this.crowdEntities.push(crowdEntity);
+                    if(crowdEntity.ellipsoid){
+                        crowdEntity.ellipsoid.disableDepthTestDistance = Number.POSITIVE_INFINITY;
+                    }
                 }
             }
         }
@@ -133,13 +136,15 @@ class VisualizationManager {
     visualizeEvacuationPoints(points) {
         points.forEach((point, index) => {
             const entity = this.viewer.entities.add({
-                position: VisualizationManager.localToCart(point.x, point.z, 0),
+                position: VisualizationManager.localToCart(point.x, point.z, 1.5),
                 ellipsoid: {
                     radii: new Cesium.Cartesian3(2, 2, 1),
                     material: Cesium.Color.GREEN,
                     outline: true,
                     outlineColor: Cesium.Color.DARKGREEN
                 },
+                // 라벨은 billboard 아님 → 클램프
+                disableDepthTestDistance: Number.POSITIVE_INFINITY,
                 label: {
                     text: point.name,
                     font: '14pt sans-serif',
@@ -158,11 +163,12 @@ class VisualizationManager {
     // 경로점 추가
     addPathPoint(position, color, label) {
         const entity = this.viewer.entities.add({
-            position: VisualizationManager.localToCart(position.x, position.z, 0),
+            position: VisualizationManager.localToCart(position.x, position.z, 1.5),
             ellipsoid: {
                 radii: new Cesium.Cartesian3(1, 1, 1),
                 material: color
             },
+            disableDepthTestDistance: Number.POSITIVE_INFINITY,
             label: {
                 text: label,
                 font: '12pt sans-serif',

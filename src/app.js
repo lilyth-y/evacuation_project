@@ -73,6 +73,23 @@ class EvacuationSimulation {
                 this.viewer.scene.primitives.add(this.bimTileset);
                 // 건물 확대
                 this.viewer.zoomTo(this.bimTileset).catch(()=>{});
+
+                // ── 내부 가시화 준비 : 타일셋이 로드된 뒤 외벽 반투명 + 단면 절단 ──
+                this.bimTileset.readyPromise.then(()=>{
+                    // 외벽 15% 투명
+                    this.bimTileset.style = new Cesium.Cesium3DTileStyle({
+                        color: "color('white',0.15)"
+                    });
+
+                    // X-방향으로 한쪽 벽 컷팅 (서쪽 20m, 동쪽 15m)
+                    this.bimTileset.clippingPlanes = new Cesium.ClippingPlaneCollection({
+                        planes:[
+                            new Cesium.ClippingPlane(new Cesium.Cartesian3( 1,0,0), -20),
+                            new Cesium.ClippingPlane(new Cesium.Cartesian3(-1,0,0),  15)
+                        ],
+                        unionClippingRegions:true
+                    });
+                });
             } catch(e){ console.warn('BIM 타일셋 로드 실패', e); }
             
             // Google Photorealistic 3D Tiles 로드 (Asset ID 2275207)
