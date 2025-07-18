@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D 대피 시뮬레이션 시스템 POC</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.118/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.118/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        #cesiumContainer {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+        .ui-panel {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+        .ui-panel.top-left {
+            top: 10px;
+            left: 10px;
+        }
+        .ui-panel.top-right {
+            top: 10px;
+            right: 10px;
+            max-width: 300px;
+        }
+        .ui-panel.bottom {
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+        }
+        .floor-selector {
+            margin-bottom: 10px;
+        }
+        .floor-selector select {
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .status-safe { background-color: #4CAF50; }
+        .status-warning { background-color: #FF9800; }
+        .status-danger { background-color: #F44336; }
+        
+        .sim-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        
+        .sim-btn:hover {
+            background: #1976D2;
+        }
+        
+        .sim-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div id="cesiumContainer"></div>
+    
+    <!-- 좌측 상단: 층 선택 -->
+    <div class="ui-panel top-left">
+        <div class="floor-selector">
+            <label for="floorSelect">층 선택:</label>
+            <select id="floorSelect">
+                <option value="all">전체 층</option>
+                <option value="1">1층</option>
+                <option value="2">2층</option>
+                <option value="3">3층</option>
+            </select>
+        </div>
+        <div>
+            <span class="status-indicator status-safe"></span>
+            <span>시스템 상태: 정상</span>
+        </div>
+        <div style="margin-top: 10px;">
+            <button id="startSimBtn" class="sim-btn">시뮬레이션 시작</button>
+            <button id="stopSimBtn" class="sim-btn" disabled>시뮬레이션 중지</button>
+        </div>
+    </div>
+    
+    <!-- 우측 상단: 재난 알림 -->
+    <div class="ui-panel top-right">
+        <h4>재난 알림</h4>
+        <div id="alertLog">
+            <div>시스템 초기화 완료</div>
+        </div>
+    </div>
+    
+    <!-- 하단: 안내 패널 -->
+    <div class="ui-panel bottom">
+        <div id="guidancePanel">
+            <h4>대피 안내</h4>
+            <div id="guidanceText">시스템을 초기화하는 중입니다...</div>
+        </div>
+    </div>
+
+    <script src="src/app.js"></script>
+    <script type="module">
+        import PathfindingAlgorithm from './src/pathfinding.js';
+        import CrowdSimulator from './src/mock-data/crowd-simulator.js';
+        import IFCIntegration from './src/ifc-integration.js';
+        import VisualizationManager from './src/visualization.js';
+        
+        // 전역 변수로 설정
+        window.PathfindingAlgorithm = PathfindingAlgorithm;
+        window.CrowdSimulator = CrowdSimulator;
+        window.IFCIntegration = IFCIntegration;
+        window.VisualizationManager = VisualizationManager;
+    </script>
+</body>
+</html>

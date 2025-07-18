@@ -1,0 +1,19 @@
+{
+  "name": "evacuation-simulation-poc",
+  "version": "1.0.0",
+  "description": "3D 대피 시뮬레이션 시스템 POC",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server . -p 8080 -c-1",
+    "dev": "http-server . -p 8080 -c-1 -o"
+  },
+  "dependencies": {
+    "cesium": "^1.118.0",
+    "three": "^0.149.0",
+    "web-ifc": "^0.0.46",
+    "web-ifc-three": "^0.0.125"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
